@@ -1,9 +1,9 @@
+#nullable enable
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Net.Sockets;
 using System.Text;
 using Microsoft.TemplateEngine.Core.Contracts;
 using Microsoft.TemplateEngine.Core.Matching;
@@ -75,7 +75,8 @@ namespace Microsoft.TemplateEngine.Core.Util
             CurrentBufferLength = source.Read(CurrentBuffer, 0, CurrentBuffer.Length);
 
             Encoding encoding = EncodingUtil.Detect(CurrentBuffer, CurrentBufferLength, out _bom);
-            Encoding = encoding;
+            _encoding = encoding;
+            EncodingConfig = new EncodingConfig(Config, _encoding);
             CurrentBufferPosition = _bom.Length;
             CurrentSequenceNumber = _bom.Length;
             if (_bom.Length > 0)
