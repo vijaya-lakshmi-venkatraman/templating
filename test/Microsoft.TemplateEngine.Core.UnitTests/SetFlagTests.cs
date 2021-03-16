@@ -147,5 +147,41 @@ End";
             IProcessor processor = Processor.Create(engineConfig, operations);
             RunAndVerify(originalValue, expectedValue, processor, 9999);
         }
+
+        // Using //-:cnd:noEmit on the first line of *.cs file corrupts file content when templating new project
+        [Fact(DisplayName = nameof(Bug2913))]
+        public void Bug2913()
+        {
+            string originalValue = @"//-:cnd:noEmit
+#if DEBUG
+using System;
+#endif
+//+:cnd:noEmit";
+
+            string expectedValue = @"#if DEBUG
+using System;
+#endif
+";
+
+            VariableCollection vc = new VariableCollection();
+            EngineConfig engineConfig = new EngineConfig(EnvironmentSettings, vc);
+
+            ConditionalTokens tokens = new ConditionalTokens
+            {
+                IfTokens = new[] { "#if" }.TokenConfigs()
+            };
+
+            string on = "//+:cnd";
+            string onNoEmit = on + ":noEmit";
+            string off = "//-:cnd";
+            string offNoEmit = off + ":noEmit";
+            IOperationProvider[] operations =
+            {
+                new SetFlag(Conditional.OperationName, on.TokenConfig(), off.TokenConfig(), onNoEmit.TokenConfig(), offNoEmit.TokenConfig(), null, true),
+                new Conditional(tokens, true, true, Expressions.Cpp.CppStyleEvaluatorDefinition.Evaluate, null, true)
+            };
+            IProcessor processor = Processor.Create(engineConfig, operations);
+            RunAndVerify(originalValue, expectedValue, processor, 9999, emitBOM: true);
+        }
     }
 }

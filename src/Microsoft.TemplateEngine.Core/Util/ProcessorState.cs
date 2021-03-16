@@ -189,6 +189,12 @@ namespace Microsoft.TemplateEngine.Core.Util
             int bytesWrittenSinceLastFlush = 0;
             bool anyOperationsExecuted = false;
 
+            if (_isBomNeeded)
+            {
+                _target.Write(_bom, 0, _bom.Length);
+                _isBomNeeded = false;
+            }
+
             while (true)
             {
                 //Loop until we run out of data in the buffer
@@ -208,11 +214,6 @@ namespace Microsoft.TemplateEngine.Core.Util
 //Console.WriteLine("UnmatchedBlock");
 //string text = System.Text.Encoding.UTF8.GetString(CurrentBuffer, handoffBufferPosition - toWrite - matchLength, toWrite).Replace("\0", "\\0");
 //Console.WriteLine(text);
-                            if (_isBomNeeded)
-                            {
-                                _target.Write(_bom, 0, _bom.Length);
-                                _isBomNeeded = false;
-                            }
                             _target.Write(CurrentBuffer, handoffBufferPosition - toWrite - matchLength, toWrite);
                             bytesWrittenSinceLastFlush += toWrite;
                             nextSequenceNumberThatCouldBeWritten = posedPosition - matchLength + 1;
