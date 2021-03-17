@@ -150,8 +150,9 @@ End";
         }
 
         // Using //-:cnd:noEmit on the first line of *.cs file corrupts file content when templating new project
-        [Fact(DisplayName = nameof(Bug2913))]
-        public void Bug2913()
+        // https://github.com/dotnet/templating/pull/2939
+        [Fact(DisplayName = nameof(ValidateConditionOnStartOfFileWithBOM))]
+        public void ValidateConditionOnStartOfFileWithBOM()
         {
             string originalValue = @"//-:cnd:noEmit
 #if DEBUG
