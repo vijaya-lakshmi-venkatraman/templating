@@ -15,9 +15,8 @@ namespace Microsoft.TemplateEngine.Core.Util
         private Stream _source;
         private readonly Stream _target;
         private byte[] _bom;
-        private Boolean _isBomNeeded;
+        private bool _isBomNeeded;
         private readonly TrieEvaluator<OperationTerminal> _trie;
-        private Encoding _encoding;
         private static readonly ConcurrentDictionary<IReadOnlyList<IOperationProvider>, Dictionary<Encoding, Trie<OperationTerminal>>> TrieLookup = new ConcurrentDictionary<IReadOnlyList<IOperationProvider>, Dictionary<Encoding, Trie<OperationTerminal>>>();
         private static readonly ConcurrentDictionary<IReadOnlyList<IOperationProvider>, List<string>> OperationsToExplicitlySetOnByDefault = new ConcurrentDictionary<IReadOnlyList<IOperationProvider>, List<string>>();
         private readonly int _flushThreshold;
@@ -32,16 +31,11 @@ namespace Microsoft.TemplateEngine.Core.Util
 
         public int CurrentSequenceNumber { get; private set; }
 
-        public IEncodingConfig EncodingConfig { get; private set; }
+        public IEncodingConfig EncodingConfig { get; }
 
         public Encoding Encoding
         {
-            get { return _encoding; }
-            set
-            {
-                _encoding = value;
-                EncodingConfig = new EncodingConfig(Config, _encoding);
-            }
+            get { return EncodingConfig.Encoding; }
         }
 
         public ProcessorState(Stream source, Stream target, int bufferSize, int flushThreshold, IEngineConfig config, IReadOnlyList<IOperationProvider> operationProviders)
@@ -75,8 +69,7 @@ namespace Microsoft.TemplateEngine.Core.Util
             CurrentBufferLength = source.Read(CurrentBuffer, 0, CurrentBuffer.Length);
 
             Encoding encoding = EncodingUtil.Detect(CurrentBuffer, CurrentBufferLength, out _bom);
-            _encoding = encoding;
-            EncodingConfig = new EncodingConfig(Config, _encoding);
+            EncodingConfig = new EncodingConfig(Config, encoding);
             CurrentBufferPosition = _bom.Length;
             CurrentSequenceNumber = _bom.Length;
             if (_bom.Length > 0)
