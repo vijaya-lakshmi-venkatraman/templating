@@ -79,7 +79,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
             }
             catch (Exception e)
             {
-                _nugetLogger.LogError($"Failed to load the NuGet source {source.Source}.");
+                _nugetLogger.LogError(string.Format(LocalizableStrings.NuGetApiPackageManager_Error_FailedToLoadSource, source.Source));
                 _nugetLogger.LogDebug($"Details: {e.ToString()}.");
                 throw new InvalidNuGetSourceException("Failed to load NuGet source", new[] { source.Source }, e);
             }
@@ -87,7 +87,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
             string filePath = Path.Combine(downloadPath, packageMetadata.Identity.Id + "." + packageMetadata.Identity.Version + ".nupkg");
             if (_environmentSettings.Host.FileSystem.FileExists(filePath))
             {
-                _nugetLogger.LogError($"File {filePath} already exists.");
+                _nugetLogger.LogError(string.Format(LocalizableStrings.NuGetApiPackageManager_Error_FileAlreadyExists, filePath));
                 throw new DownloadException(packageMetadata.Identity.Id, packageMetadata.Identity.Version.ToNormalizedString(), new[] { source.Source });
             }
             try
@@ -112,14 +112,21 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
                 }
                 else
                 {
-                    _nugetLogger.LogWarning($"Failed to download {packageMetadata.Identity.Id}::{packageMetadata.Identity.Version} from NuGet feed {source.Source}");
+                    _nugetLogger.LogWarning(
+                        string.Format(
+                            LocalizableStrings.NuGetApiPackageManager_Warning_FailedToDownload,
+                            $"{packageMetadata.Identity.Id}::{packageMetadata.Identity.Version}",
+                            source.Source));
                     try
                     {
                         _environmentSettings.Host.FileSystem.FileDelete(filePath);
                     }
                     catch (Exception ex)
                     {
-                        _nugetLogger.LogWarning($"Failed to remove {filePath} after failed download. Remove the file manually if it exists.");
+                        _nugetLogger.LogWarning(
+                            string.Format(
+                                LocalizableStrings.NuGetApiPackageManager_Warning_FailedToDelete,
+                                filePath));
                         _nugetLogger.LogDebug($"Details: {ex.ToString()}.");
                     }
                     throw new DownloadException(packageMetadata.Identity.Id, packageMetadata.Identity.Version.ToNormalizedString(), new[] { source.Source });
@@ -127,7 +134,11 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
             }
             catch (Exception e)
             {
-                _nugetLogger.LogWarning($"Failed to download {packageMetadata.Identity.Id}::{packageMetadata.Identity.Version} from NuGet feed {source.Source}.");
+                _nugetLogger.LogWarning(
+                    string.Format(
+                        LocalizableStrings.NuGetApiPackageManager_Warning_FailedToDownload,
+                        $"{packageMetadata.Identity.Id}::{packageMetadata.Identity.Version}",
+                        source.Source));
                 _nugetLogger.LogDebug($"Details: {e.ToString()}.");
                 try
                 {
@@ -135,7 +146,10 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
                 }
                 catch (Exception ex)
                 {
-                    _nugetLogger.LogWarning($"Failed to remove {filePath} after failed download. Remove the file manually if it exists.");
+                    _nugetLogger.LogWarning(
+                        string.Format(
+                            LocalizableStrings.NuGetApiPackageManager_Warning_FailedToDelete,
+                            filePath));
                     _nugetLogger.LogDebug($"Details: {ex.ToString()}.");
                 }
                 throw new DownloadException(packageMetadata.Identity.Id, packageMetadata.Identity.Version.ToNormalizedString(), new[] { source.Source }, e.InnerException);
@@ -196,7 +210,11 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
 
             if (!accumulativeSearchResults.Any())
             {
-                _nugetLogger.LogWarning($"{packageIdentifier} is not found in NuGet feeds {string.Join(", ", packageSources.Select(source => source.Source))}.");
+                _nugetLogger.LogWarning(
+                    string.Format(
+                        LocalizableStrings.NuGetApiPackageManager_Warning_PackageNotFound,
+                        packageIdentifier,
+                        string.Join(", ", packageSources.Select(source => source.Source))));
                 throw new PackageNotFoundException(packageIdentifier, packageSources.Select(source => source.Source));
             }
 
@@ -263,8 +281,11 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
             {
                 throw new InvalidNuGetSourceException("Failed to load NuGet sources", sources.Select(s => s.Source));
             }
-
-            _nugetLogger.LogWarning($"{packageIdentifier}::{packageVersion} is not found in NuGet feeds {string.Join(", ", sources.Select(source => source.Source))}.");
+            _nugetLogger.LogWarning(
+                string.Format(
+                    LocalizableStrings.NuGetApiPackageManager_Warning_PackageNotFound,
+                    $"{packageIdentifier}::{packageVersion}",
+                    string.Join(", ", sources.Select(source => source.Source))));
             throw new PackageNotFoundException(packageIdentifier, packageVersion, sources.Select(source => source.Source));
         }
 
@@ -302,7 +323,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
             }
             catch (Exception ex)
             {
-                _nugetLogger.LogError($"Failed to read package information from NuGet source {source.Source}.");
+                _nugetLogger.LogError(string.Format(LocalizableStrings.NuGetApiPackageManager_Error_FailedToReadPackage, source.Source));
                 _nugetLogger.LogDebug($"Details: {ex.ToString()}.");
             }
             return (source, foundPackages: null);
@@ -321,7 +342,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
             }
             catch (Exception ex)
             {
-                _nugetLogger.LogError($"Failed to load NuGet sources configured for the folder {currentDirectory}.");
+                _nugetLogger.LogError(string.Format(LocalizableStrings.NuGetApiPackageManager_Error_FailedToLoadSources, currentDirectory));
                 _nugetLogger.LogDebug($"Details: {ex.ToString()}.");
                 throw new InvalidNuGetSourceException($"Failed to load NuGet sources configured for the folder {currentDirectory}", ex);
             }
@@ -330,7 +351,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
             {
                 if (!defaultSources.Any())
                 {
-                    _nugetLogger.LogError($"No NuGet sources are defined or enabled.");
+                    _nugetLogger.LogError(LocalizableStrings.NuGetApiPackageManager_Error_NoSources);
                     throw new InvalidNuGetSourceException("No NuGet sources are defined or enabled");
                 }
                 return defaultSources;
@@ -351,7 +372,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
                 PackageSource packageSource = new PackageSource(source);
                 if (packageSource.TrySourceAsUri == null)
                 {
-                    _nugetLogger.LogWarning($"Failed to load NuGet source {source}: the source is not valid. It will be skipped in further processing.");
+                    _nugetLogger.LogWarning(string.Format(LocalizableStrings.NuGetApiPackageManager_Warning_FailedToLoadSource, source));
                     continue;
                 }
                 customSources.Add(packageSource);
@@ -360,7 +381,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.NuGet
             IEnumerable<PackageSource> retrievedSources = customSources.Concat(defaultSources);
             if (!retrievedSources.Any())
             {
-                _nugetLogger.LogError($"No NuGet sources are defined or enabled.");
+                _nugetLogger.LogError(LocalizableStrings.NuGetApiPackageManager_Error_NoSources);
                 throw new InvalidNuGetSourceException("No NuGet sources are defined or enabled");
             }
             return retrievedSources;
