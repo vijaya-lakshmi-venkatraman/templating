@@ -171,7 +171,7 @@ namespace Microsoft.TemplateEngine.IDE.IntegrationTests
         internal async Task CanCheckForLatestVersion_Folder()
         {
             Bootstrapper bootstrapper = BootstrapperFactory.GetBootstrapper();
-            string templateLocation = TestHelper.GetTestTemplateLocation("TemplateWithSourceName");
+            string templateLocation = TestUtils.GetTestTemplateLocation("TemplateWithSourceName");
 
             InstallRequest installRequest = new InstallRequest
             {
@@ -279,7 +279,7 @@ namespace Microsoft.TemplateEngine.IDE.IntegrationTests
         internal async Task CanUninstall_Folder()
         {
             Bootstrapper bootstrapper = BootstrapperFactory.GetBootstrapper();
-            string templateLocation = TestHelper.GetTestTemplateLocation("TemplateWithSourceName");
+            string templateLocation = TestUtils.GetTestTemplateLocation("TemplateWithSourceName");
 
             InstallRequest installRequest = new InstallRequest
             {
