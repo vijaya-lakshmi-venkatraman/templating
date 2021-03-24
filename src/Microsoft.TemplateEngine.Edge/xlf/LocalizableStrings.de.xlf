@@ -38,8 +38,8 @@
         <note />
       </trans-unit>
       <trans-unit id="NuGetApiPackageManager_Error_FileAlreadyExists">
-        <source>File {0] already exists</source>
-        <target state="new">File {0] already exists</target>
+        <source>File {0} already exists</source>
+        <target state="new">File {0} already exists</target>
         <note />
       </trans-unit>
       <trans-unit id="NuGetApiPackageManager_Error_NoSources">

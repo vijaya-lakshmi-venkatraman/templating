@@ -141,7 +141,7 @@
     <value>Failed to read package information from NuGet source {0}</value>
   </data>
   <data name="NuGetApiPackageManager_Error_FileAlreadyExists" xml:space="preserve">
-    <value>File {0] already exists</value>
+    <value>File {0} already exists</value>
   </data>
   <data name="NuGetApiPackageManager_Error_NoSources" xml:space="preserve">
     <value>No NuGet sources are defined or enabled</value>

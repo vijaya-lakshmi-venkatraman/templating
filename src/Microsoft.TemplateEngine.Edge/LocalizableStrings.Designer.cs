@@ -124,7 +124,7 @@ namespace Microsoft.TemplateEngine.Edge {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File {0] already exists.
+        ///   Looks up a localized string similar to File {0} already exists.
         /// </summary>
         internal static string NuGetApiPackageManager_Error_FileAlreadyExists {
             get {
