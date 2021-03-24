@@ -49,7 +49,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             Assert.Equal(InstallerErrorCode.Success, result.Error);
             result.ErrorMessage.Should().BeNullOrEmpty();
 
-            var source = (FolderManagedTemplatesSource)result.Source;
+            var source = (FolderManagedTemplatePackage)result.Source;
             source.MountPointUri.Should().Be(installPath);
             source.Version.Should().BeNullOrEmpty();
             source.DisplayName.Should().Be(installPath);
@@ -115,7 +115,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
 
             FolderInstaller folderInstaller = new FolderInstaller(engineEnvironmentSettings, factory, provider);
 
-            FolderManagedTemplatesSource source = new FolderManagedTemplatesSource(engineEnvironmentSettings, folderInstaller, Path.GetRandomFileName());
+            FolderManagedTemplatePackage source = new FolderManagedTemplatePackage(engineEnvironmentSettings, folderInstaller, Path.GetRandomFileName());
             IReadOnlyList<CheckUpdateResult> results = await folderInstaller.GetLatestVersionAsync(new[] { source }, CancellationToken.None).ConfigureAwait(false);
 
             Assert.Single(results);
@@ -149,7 +149,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
 
             FolderInstaller folderInstaller = new FolderInstaller(engineEnvironmentSettings, factory, provider);
 
-            FolderManagedTemplatesSource source = new FolderManagedTemplatesSource(engineEnvironmentSettings, folderInstaller, Path.GetRandomFileName());
+            FolderManagedTemplatePackage source = new FolderManagedTemplatePackage(engineEnvironmentSettings, folderInstaller, Path.GetRandomFileName());
             UpdateRequest updateRequest = new UpdateRequest
             {
                 Source = source,
@@ -196,7 +196,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             Assert.Equal(InstallerErrorCode.Success, result.Error);
             result.ErrorMessage.Should().BeNullOrEmpty();
 
-            var source = (FolderManagedTemplatesSource)result.Source;
+            var source = (FolderManagedTemplatePackage)result.Source;
             source.Should().NotBeNull();
             source.MountPointUri.Should().Be(installPath);
             Directory.Exists(installPath);

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.TemplateEngine.Abstractions;
 using Microsoft.TemplateEngine.Abstractions.GlobalSettings;
 using Microsoft.TemplateEngine.Abstractions.Mount;
-using Microsoft.TemplateEngine.Abstractions.TemplatesSources;
+using Microsoft.TemplateEngine.Abstractions.TemplatePackages;
 
 namespace Microsoft.TemplateEngine.Mocks
 {
@@ -26,7 +26,7 @@ namespace Microsoft.TemplateEngine.Mocks
 
         public IGlobalSettings GlobalSettings => throw new NotImplementedException();
 
-        public ITemplatesSourcesManager TemplatesSourcesManager => throw new NotImplementedException();
+        public ITemplatePackagesManager TemplatePackagesManager => throw new NotImplementedException();
 
         public void AddProbingPath(string probeIn)
         {

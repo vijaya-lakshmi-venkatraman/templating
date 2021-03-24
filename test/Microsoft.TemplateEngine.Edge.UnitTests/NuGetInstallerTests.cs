@@ -136,7 +136,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             Assert.Equal(InstallerErrorCode.Success, installResult.Error);
             installResult.ErrorMessage.Should().BeNullOrEmpty();
 
-            var source = (NuGetManagedTemplatesSource)installResult.Source;
+            var source = (NuGetManagedTemplatePackage)installResult.Source;
             source.MountPointUri.Should().ContainAll(new[] { installPath, "Microsoft.TemplateEngine.TestTemplates" });
             source.Author.Should().Be("Microsoft");
             source.Version.Should().NotBeNullOrEmpty();
@@ -226,7 +226,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             Assert.Equal(InstallerErrorCode.Success, installResult.Error);
             installResult.ErrorMessage.Should().BeNullOrEmpty();
 
-            var source = (NuGetManagedTemplatesSource)installResult.Source;
+            var source = (NuGetManagedTemplatePackage)installResult.Source;
             source.MountPointUri.Should().ContainAll(new[] { installPath, "Microsoft.TemplateEngine.TestTemplates" });
             source.Author.Should().Be("Microsoft");
             source.Version.Should().Be("1.0.0");
@@ -287,7 +287,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             Assert.True(installResult.Success);
             Assert.Equal(request, installResult.InstallRequest);
 
-            var source = (NuGetManagedTemplatesSource)installResult.Source;
+            var source = (NuGetManagedTemplatePackage)installResult.Source;
             IReadOnlyList<CheckUpdateResult> checkUpdateResults = await installer.GetLatestVersionAsync(new[] { source }, CancellationToken.None).ConfigureAwait(false);
 
             Assert.Single(checkUpdateResults);
@@ -316,8 +316,8 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             NuGetInstaller installer = new NuGetInstaller(factory, provider, engineEnvironmentSettings, installPath, mockPackageManager, mockPackageManager);
 
             Dictionary<string, string> sourceDetails = new Dictionary<string, string>();
-            sourceDetails[NuGetManagedTemplatesSource.PackageIdKey] = exception;
-            NuGetManagedTemplatesSource source = new NuGetManagedTemplatesSource(engineEnvironmentSettings, installer, installPath, sourceDetails);
+            sourceDetails[NuGetManagedTemplatePackage.PackageIdKey] = exception;
+            NuGetManagedTemplatePackage source = new NuGetManagedTemplatePackage(engineEnvironmentSettings, installer, installPath, sourceDetails);
             IReadOnlyList<CheckUpdateResult> checkUpdateResults = await installer.GetLatestVersionAsync(new[] { source }, CancellationToken.None).ConfigureAwait(false);
 
             Assert.Single(checkUpdateResults);
@@ -350,7 +350,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             Assert.True(installResult.Success);
             Assert.Equal(request, installResult.InstallRequest);
 
-            var source = (NuGetManagedTemplatesSource)installResult.Source;
+            var source = (NuGetManagedTemplatePackage)installResult.Source;
             string mountPoint = source.MountPointUri;
             Assert.True(File.Exists(mountPoint));
 
@@ -386,7 +386,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             Assert.Equal(InstallerErrorCode.Success, installResult.Error);
             installResult.ErrorMessage.Should().BeNullOrEmpty();
 
-            var source = (NuGetManagedTemplatesSource)installResult.Source;
+            var source = (NuGetManagedTemplatePackage)installResult.Source;
             string oldMountPoint = source.MountPointUri;
             Assert.True(File.Exists(oldMountPoint));
             UpdateRequest updateRequest = new UpdateRequest()
@@ -401,7 +401,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             Assert.Equal(InstallerErrorCode.Success, updateResult.Error);
             updateResult.ErrorMessage.Should().BeNullOrEmpty();
 
-            var updatedSource = (NuGetManagedTemplatesSource)updateResult.Source;
+            var updatedSource = (NuGetManagedTemplatePackage)updateResult.Source;
 
             updatedSource.MountPointUri.Should().ContainAll(new[] { installPath, "Microsoft.TemplateEngine.TestTemplates" });
             updatedSource.Author.Should().Be("Microsoft");
@@ -420,7 +420,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
         {
             //can read details
             yield return new object[] {
-                new TemplatesSourceData()
+                new TemplatePackageData()
                 {
                      MountPointUri = "MountPointUri",
                      Details = new Dictionary<string, string>
@@ -435,7 +435,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             };
             //skips irrelevant details
             yield return new object[] {
-                new TemplatesSourceData()
+                new TemplatePackageData()
                 {
                      MountPointUri = "MountPointUri",
                      Details = new Dictionary<string, string>
@@ -452,7 +452,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
 
         [Theory]
         [MemberData(nameof(SerializationData))]
-        public void Deserialize(TemplatesSourceData data, string identifier, string version, string author, string nugetFeed, bool local)
+        public void Deserialize(TemplatePackageData data, string identifier, string version, string author, string nugetFeed, bool local)
         {
             MockInstallerFactory factory = new MockInstallerFactory();
             MockManagedTemplatesPackageProvider provider = new MockManagedTemplatesPackageProvider();
@@ -461,7 +461,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
             MockPackageManager mockPackageManager = new MockPackageManager();
             NuGetInstaller installer = new NuGetInstaller(factory, provider, engineEnvironmentSettings, installPath, mockPackageManager, mockPackageManager);
 
-            NuGetManagedTemplatesSource source = (NuGetManagedTemplatesSource)installer.Deserialize(provider, data);
+            NuGetManagedTemplatePackage source = (NuGetManagedTemplatePackage)installer.Deserialize(provider, data);
             source.MountPointUri.Should().Be(data.MountPointUri);
             source.Author.Should().Be(author);
             source.Version.Should().Be(version);

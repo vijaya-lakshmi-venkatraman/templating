@@ -1,10 +1,10 @@
-using Microsoft.TemplateEngine.Abstractions.TemplatesSources;
+using Microsoft.TemplateEngine.Abstractions.TemplatePackages;
 
 namespace Microsoft.TemplateEngine.Abstractions.Installer
 {
     public class UninstallResult : Result
     {
-        public static UninstallResult CreateSuccess(IManagedTemplatesSource source)
+        public static UninstallResult CreateSuccess(IManagedTemplatePackage source)
         {
             return new UninstallResult()
             {
@@ -13,7 +13,7 @@ namespace Microsoft.TemplateEngine.Abstractions.Installer
             };
         }
 
-        public static UninstallResult CreateFailure(IManagedTemplatesSource source, InstallerErrorCode code, string localizedFailureMessage)
+        public static UninstallResult CreateFailure(IManagedTemplatePackage source, InstallerErrorCode code, string localizedFailureMessage)
         {
             return new UninstallResult()
             {

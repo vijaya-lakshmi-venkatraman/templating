@@ -81,18 +81,18 @@ namespace Microsoft.TemplateEngine.Edge {
         /// <summary>
         ///   Looks up a localized string similar to {0} is already installed, version: {1}, it will be replaced with {2}.
         /// </summary>
-        internal static string GlobalSettingsTemplatesSourcesProvider_Info_PackageAlreadyInstalled {
+        internal static string GlobalSettingsTemplatePackagesProvider_Info_PackageAlreadyInstalled {
             get {
-                return ResourceManager.GetString("GlobalSettingsTemplatesSourcesProvider_Info_PackageAlreadyInstalled", resourceCulture);
+                return ResourceManager.GetString("GlobalSettingsTemplatePackagesProvider_Info_PackageAlreadyInstalled", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to {0} was successfully uninstalled.
         /// </summary>
-        internal static string GlobalSettingsTemplatesSourcesProvider_Info_PackageUninstalled {
+        internal static string GlobalSettingsTemplatePackagesProvider_Info_PackageUninstalled {
             get {
-                return ResourceManager.GetString("GlobalSettingsTemplatesSourcesProvider_Info_PackageUninstalled", resourceCulture);
+                return ResourceManager.GetString("GlobalSettingsTemplatePackagesProvider_Info_PackageUninstalled", resourceCulture);
             }
         }
         

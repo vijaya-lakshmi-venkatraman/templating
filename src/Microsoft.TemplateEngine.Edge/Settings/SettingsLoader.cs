@@ -9,7 +9,7 @@ using Microsoft.TemplateEngine.Abstractions;
 using Microsoft.TemplateEngine.Abstractions.GlobalSettings;
 using Microsoft.TemplateEngine.Abstractions.Mount;
 using Microsoft.TemplateEngine.Abstractions.PhysicalFileSystem;
-using Microsoft.TemplateEngine.Abstractions.TemplatesSources;
+using Microsoft.TemplateEngine.Abstractions.TemplatePackages;
 using Microsoft.TemplateEngine.Edge.Mount.FileSystem;
 using Microsoft.TemplateEngine.Utils;
 using Newtonsoft.Json;
@@ -30,7 +30,7 @@ namespace Microsoft.TemplateEngine.Edge.Settings
         private bool _templatesLoaded;
         private readonly Paths _paths;
         private readonly IEngineEnvironmentSettings _environmentSettings;
-        private TemplatesSourcesManager _templatesSourcesManager;
+        private TemplatePackagesManager _templatePackagesManager;
         private volatile bool _disposed;
 
         public SettingsLoader(IEngineEnvironmentSettings environmentSettings)
@@ -38,7 +38,7 @@ namespace Microsoft.TemplateEngine.Edge.Settings
             _environmentSettings = environmentSettings;
             _paths = new Paths(environmentSettings);
             _userTemplateCache = new TemplateCache(environmentSettings);
-            _templatesSourcesManager = new TemplatesSourcesManager(environmentSettings);
+            _templatePackagesManager = new TemplatePackagesManager(environmentSettings);
         }
 
         public void Save()
@@ -159,13 +159,13 @@ namespace Microsoft.TemplateEngine.Edge.Settings
             forceRebuild |= _userTemplateCache.Locale != CultureInfo.CurrentUICulture.Name;
 
             var placesThatNeedScanning = new HashSet<string>();
-            var allTemplatesSources = await _templatesSourcesManager.GetTemplatesSources(forceRebuild).ConfigureAwait(false);
+            var allTemplatePackages = await _templatePackagesManager.GetTemplatePackages(forceRebuild).ConfigureAwait(false);
             var mountPoints = new Dictionary<string, DateTime>();
 
             if (forceRebuild)
             {
                 _userTemplateCache = new TemplateCache(_environmentSettings);
-                foreach (var source in allTemplatesSources)
+                foreach (var source in allTemplatePackages)
                 {
                     mountPoints[source.MountPointUri] = source.LastChangeTime;
                     placesThatNeedScanning.Add(source.MountPointUri);
@@ -173,7 +173,7 @@ namespace Microsoft.TemplateEngine.Edge.Settings
             }
             else
             {
-                foreach (var source in allTemplatesSources)
+                foreach (var source in allTemplatePackages)
                 {
                     mountPoints[source.MountPointUri] = source.LastChangeTime;
 
@@ -302,7 +302,7 @@ namespace Microsoft.TemplateEngine.Edge.Settings
 
         public IGlobalSettings GlobalSettings { get; private set; }
 
-        public ITemplatesSourcesManager TemplatesSourcesManager => _templatesSourcesManager;
+        public ITemplatePackagesManager TemplatePackagesManager => _templatePackagesManager;
 
         public async Task<IReadOnlyList<ITemplateInfo>> GetTemplatesAsync(CancellationToken token)
         {

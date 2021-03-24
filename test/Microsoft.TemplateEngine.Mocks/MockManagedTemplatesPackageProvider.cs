@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.TemplateEngine.Abstractions.Installer;
-using Microsoft.TemplateEngine.Abstractions.TemplatesSources;
+using Microsoft.TemplateEngine.Abstractions.TemplatePackages;
 
 namespace Microsoft.TemplateEngine.Mocks
 {
-    public class MockManagedTemplatesPackageProvider : IManagedTemplatesSourcesProvider
+    public class MockManagedTemplatesPackageProvider : IManagedTemplatePackagesProvider
     {
         public event Action SourcesChanged
         {
@@ -18,12 +18,12 @@ namespace Microsoft.TemplateEngine.Mocks
             remove { }
         }
 
-        public ITemplatesSourcesProviderFactory Factory => throw new NotImplementedException();
+        public ITemplatePackagesProviderFactory Factory => throw new NotImplementedException();
 
-        public Task<IReadOnlyList<ITemplatesSource>> GetAllSourcesAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
-        public Task<IReadOnlyList<CheckUpdateResult>> GetLatestVersionsAsync(IEnumerable<IManagedTemplatesSource> managedSources, CancellationToken cancellationToken) => throw new NotImplementedException();
+        public Task<IReadOnlyList<ITemplatePackage>> GetAllSourcesAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
+        public Task<IReadOnlyList<CheckUpdateResult>> GetLatestVersionsAsync(IEnumerable<IManagedTemplatePackage> managedSources, CancellationToken cancellationToken) => throw new NotImplementedException();
         public Task<IReadOnlyList<InstallResult>> InstallAsync(IEnumerable<InstallRequest> installRequests, CancellationToken cancellationToken) => throw new NotImplementedException();
-        public Task<IReadOnlyList<UninstallResult>> UninstallAsync(IEnumerable<IManagedTemplatesSource> managedSources, CancellationToken cancellationToken) => throw new NotImplementedException();
+        public Task<IReadOnlyList<UninstallResult>> UninstallAsync(IEnumerable<IManagedTemplatePackage> managedSources, CancellationToken cancellationToken) => throw new NotImplementedException();
         public Task<IReadOnlyList<UpdateResult>> UpdateAsync(IEnumerable<UpdateRequest> updateRequests, CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 }

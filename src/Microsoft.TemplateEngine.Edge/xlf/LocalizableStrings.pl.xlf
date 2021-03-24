@@ -12,12 +12,12 @@
         <target state="new">version {0}</target>
         <note>small letters, string is used in the sentence</note>
       </trans-unit>
-      <trans-unit id="GlobalSettingsTemplatesSourcesProvider_Info_PackageAlreadyInstalled">
+      <trans-unit id="GlobalSettingsTemplatePackagesProvider_Info_PackageAlreadyInstalled">
         <source>{0} is already installed, version: {1}, it will be replaced with {2}</source>
         <target state="new">{0} is already installed, version: {1}, it will be replaced with {2}</target>
         <note />
       </trans-unit>
-      <trans-unit id="GlobalSettingsTemplatesSourcesProvider_Info_PackageUninstalled">
+      <trans-unit id="GlobalSettingsTemplatePackagesProvider_Info_PackageUninstalled">
         <source>{0} was successfully uninstalled</source>
         <target state="new">{0} was successfully uninstalled</target>
         <note />

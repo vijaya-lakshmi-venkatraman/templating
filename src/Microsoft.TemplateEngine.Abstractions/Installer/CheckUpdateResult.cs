@@ -1,7 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Microsoft.TemplateEngine.Abstractions.TemplatesSources;
+using Microsoft.TemplateEngine.Abstractions.TemplatePackages;
 
 namespace Microsoft.TemplateEngine.Abstractions.Installer
 {
@@ -11,7 +11,7 @@ namespace Microsoft.TemplateEngine.Abstractions.Installer
 
         public bool IsLatestVersion { get; private set; }
 
-        public static CheckUpdateResult CreateSuccessNoUpdate(IManagedTemplatesSource source)
+        public static CheckUpdateResult CreateSuccessNoUpdate(IManagedTemplatePackage source)
         {
             return new CheckUpdateResult()
             {
@@ -21,7 +21,7 @@ namespace Microsoft.TemplateEngine.Abstractions.Installer
             };
         }
 
-        public static CheckUpdateResult CreateSuccess(IManagedTemplatesSource source, string version, bool isLatest)
+        public static CheckUpdateResult CreateSuccess(IManagedTemplatePackage source, string version, bool isLatest)
         {
             return new CheckUpdateResult()
             {
@@ -32,7 +32,7 @@ namespace Microsoft.TemplateEngine.Abstractions.Installer
             };
         }
 
-        public static CheckUpdateResult CreateFailure(IManagedTemplatesSource source, InstallerErrorCode error, string localizedFailureMessage)
+        public static CheckUpdateResult CreateFailure(IManagedTemplatePackage source, InstallerErrorCode error, string localizedFailureMessage)
         {
             return new CheckUpdateResult()
             {

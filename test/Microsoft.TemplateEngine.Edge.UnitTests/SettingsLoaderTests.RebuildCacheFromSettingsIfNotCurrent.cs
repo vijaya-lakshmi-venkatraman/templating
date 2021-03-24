@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.TemplateEngine.Abstractions;
-using Microsoft.TemplateEngine.Abstractions.TemplatesSources;
+using Microsoft.TemplateEngine.Abstractions.TemplatePackages;
 using Microsoft.TemplateEngine.Edge.Settings;
 using Microsoft.TemplateEngine.Orchestrator.RunnableProjects;
 using Microsoft.TemplateEngine.TestHelper;
@@ -17,17 +17,17 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
 {
     public class SettingsLoaderTests : IDisposable
     {
-        class FakeFactory : ITemplatesSourcesProviderFactory
+        class FakeFactory : ITemplatePackagesProviderFactory
         {
             public string Name => nameof(FakeFactory);
 
             public Guid Id { get; } = new Guid("{61CFA828-97B6-44EB-A44D-0AE673D6DF52}");
 
-            public ITemplatesSourcesProvider CreateProvider(IEngineEnvironmentSettings settings)
+            public ITemplatePackagesProvider CreateProvider(IEngineEnvironmentSettings settings)
             {
-                var defaultTemplatesSourceProvider = new DefaultTemplatesSourceProvider(this, settings, NuPkgs, Folders);
-                allCreatedProviders.Add(new WeakReference<DefaultTemplatesSourceProvider>(defaultTemplatesSourceProvider));
-                return defaultTemplatesSourceProvider;
+                var defaultTemplatePackageProvider = new DefaultTemplatePackageProvider(this, settings, NuPkgs, Folders);
+                allCreatedProviders.Add(new WeakReference<DefaultTemplatePackageProvider>(defaultTemplatePackageProvider));
+                return defaultTemplatePackageProvider;
             }
 
             static IEnumerable<string> Folders { get; set; }
@@ -39,7 +39,7 @@ namespace Microsoft.TemplateEngine.Edge.UnitTests
                 Folders = folders;
             }
 
-            static List<WeakReference<DefaultTemplatesSourceProvider>> allCreatedProviders = new List<WeakReference<DefaultTemplatesSourceProvider>>();
+            static List<WeakReference<DefaultTemplatePackageProvider>> allCreatedProviders = new List<WeakReference<DefaultTemplatePackageProvider>>();
 
             public static void TriggerChanged()
             {

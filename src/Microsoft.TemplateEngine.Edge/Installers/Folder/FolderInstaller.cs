@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.TemplateEngine.Abstractions;
 using Microsoft.TemplateEngine.Abstractions.GlobalSettings;
 using Microsoft.TemplateEngine.Abstractions.Installer;
-using Microsoft.TemplateEngine.Abstractions.TemplatesSources;
+using Microsoft.TemplateEngine.Abstractions.TemplatePackages;
 
 namespace Microsoft.TemplateEngine.Edge.Installers.Folder
 {
@@ -18,7 +18,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.Folder
     {
         private readonly IEngineEnvironmentSettings _settings;
 
-        public FolderInstaller(IEngineEnvironmentSettings settings, IInstallerFactory factory, IManagedTemplatesSourcesProvider provider)
+        public FolderInstaller(IEngineEnvironmentSettings settings, IInstallerFactory factory, IManagedTemplatePackagesProvider provider)
         {
             Name = factory.Name;
             FactoryId = factory.Id;
@@ -28,7 +28,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.Folder
 
         public Guid FactoryId { get; }
         public string Name { get; }
-        public IManagedTemplatesSourcesProvider Provider { get; }
+        public IManagedTemplatePackagesProvider Provider { get; }
 
         public Task<bool> CanInstallAsync(InstallRequest installationRequest, CancellationToken cancellationToken)
         {
@@ -37,15 +37,15 @@ namespace Microsoft.TemplateEngine.Edge.Installers.Folder
             return Task.FromResult(Directory.Exists(installationRequest.Identifier));
         }
 
-        public IManagedTemplatesSource Deserialize(IManagedTemplatesSourcesProvider provider, TemplatesSourceData data)
+        public IManagedTemplatePackage Deserialize(IManagedTemplatePackagesProvider provider, TemplatePackageData data)
         {
             _ = provider ?? throw new ArgumentNullException(nameof(provider));
             _ = data ?? throw new ArgumentNullException(nameof(data));
 
-            return new FolderManagedTemplatesSource(_settings, this, data.MountPointUri);
+            return new FolderManagedTemplatePackage(_settings, this, data.MountPointUri);
         }
 
-        public Task<IReadOnlyList<CheckUpdateResult>> GetLatestVersionAsync(IEnumerable<IManagedTemplatesSource> sources, CancellationToken cancellationToken)
+        public Task<IReadOnlyList<CheckUpdateResult>> GetLatestVersionAsync(IEnumerable<IManagedTemplatePackage> sources, CancellationToken cancellationToken)
         {
             _ = sources ?? throw new ArgumentNullException(nameof(sources));
 
@@ -58,7 +58,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.Folder
 
             if (Directory.Exists(installRequest.Identifier))
             {
-                return Task.FromResult(InstallResult.CreateSuccess(installRequest, new FolderManagedTemplatesSource(_settings, this, installRequest.Identifier)));
+                return Task.FromResult(InstallResult.CreateSuccess(installRequest, new FolderManagedTemplatePackage(_settings, this, installRequest.Identifier)));
             }
             else
             {
@@ -66,11 +66,11 @@ namespace Microsoft.TemplateEngine.Edge.Installers.Folder
             }
         }
 
-        public TemplatesSourceData Serialize(IManagedTemplatesSource managedSource)
+        public TemplatePackageData Serialize(IManagedTemplatePackage managedSource)
         {
             _ = managedSource ?? throw new ArgumentNullException(nameof(managedSource));
 
-            return new TemplatesSourceData
+            return new TemplatePackageData
             {
                 MountPointUri = managedSource.MountPointUri,
                 LastChangeTime = managedSource.LastChangeTime,
@@ -78,7 +78,7 @@ namespace Microsoft.TemplateEngine.Edge.Installers.Folder
             };
         }
 
-        public Task<UninstallResult> UninstallAsync(IManagedTemplatesSource managedSource, CancellationToken cancellationToken)
+        public Task<UninstallResult> UninstallAsync(IManagedTemplatePackage managedSource, CancellationToken cancellationToken)
         {
             _ = managedSource ?? throw new ArgumentNullException(nameof(managedSource));
 

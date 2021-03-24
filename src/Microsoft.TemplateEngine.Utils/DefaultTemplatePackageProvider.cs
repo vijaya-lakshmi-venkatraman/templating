@@ -10,21 +10,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.TemplateEngine.Abstractions;
 using Microsoft.TemplateEngine.Abstractions.PhysicalFileSystem;
-using Microsoft.TemplateEngine.Abstractions.TemplatesSources;
+using Microsoft.TemplateEngine.Abstractions.TemplatePackages;
 
 #nullable enable
 
 namespace Microsoft.TemplateEngine.Utils
 {
-    public class DefaultTemplatesSourceProvider : ITemplatesSourcesProvider
+    public class DefaultTemplatePackageProvider : ITemplatePackagesProvider
     {
         private readonly IEngineEnvironmentSettings _environmentSettings;
         private readonly IEnumerable<string> _nupkgs;
         private readonly IEnumerable<string> _folders;
 
-        public ITemplatesSourcesProviderFactory Factory { get; }
+        public ITemplatePackagesProviderFactory Factory { get; }
 
-        public DefaultTemplatesSourceProvider(ITemplatesSourcesProviderFactory factory, IEngineEnvironmentSettings environmentSettings, IEnumerable<string>? nupkgs = null, IEnumerable<string>? folders = null)
+        public DefaultTemplatePackageProvider(ITemplatePackagesProviderFactory factory, IEngineEnvironmentSettings environmentSettings, IEnumerable<string>? nupkgs = null, IEnumerable<string>? folders = null)
         {
             Factory = factory;
             _environmentSettings = environmentSettings;
@@ -39,21 +39,21 @@ namespace Microsoft.TemplateEngine.Utils
             SourcesChanged?.Invoke();
         }
 
-        public Task<IReadOnlyList<ITemplatesSource>> GetAllSourcesAsync(CancellationToken cancellationToken)
+        public Task<IReadOnlyList<ITemplatePackage>> GetAllSourcesAsync(CancellationToken cancellationToken)
         {
             var expandedNupkgs = _nupkgs.SelectMany(p => InstallRequestPathResolution.Expand(p, _environmentSettings));
             var expandedFolders = _folders.SelectMany(p => InstallRequestPathResolution.Expand(p, _environmentSettings));
 
-            var list = new List<ITemplatesSource>();
+            var list = new List<ITemplatePackage>();
             foreach (var nupkg in expandedNupkgs)
             {
-                list.Add(new TemplatesSource(this, nupkg, GetLastWriteTimeUtc(nupkg)));
+                list.Add(new TemplatePackage(this, nupkg, GetLastWriteTimeUtc(nupkg)));
             }
             foreach (var folder in expandedFolders)
             {
-                list.Add(new TemplatesSource(this, folder, GetLastWriteTimeUtc(folder)));
+                list.Add(new TemplatePackage(this, folder, GetLastWriteTimeUtc(folder)));
             }
-            return Task.FromResult<IReadOnlyList<ITemplatesSource>>(list);
+            return Task.FromResult<IReadOnlyList<ITemplatePackage>>(list);
         }
 
         private DateTime GetLastWriteTimeUtc(string path)
