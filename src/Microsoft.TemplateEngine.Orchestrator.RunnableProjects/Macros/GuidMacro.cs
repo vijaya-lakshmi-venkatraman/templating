@@ -70,8 +70,9 @@ namespace Microsoft.TemplateEngine.Orchestrator.RunnableProjects.Macros
                 };
             }
 
-            vars[config.VariableName] = g.ToString(config.DefaultFormat);
-            setter(pd, g.ToString(config.DefaultFormat));
+            string value = char.IsUpper(config.DefaultFormat) ? g.ToString(config.DefaultFormat.ToString()).ToUpperInvariant() : g.ToString(config.DefaultFormat.ToString()).ToLowerInvariant();
+            vars[config.VariableName] = value;
+            setter(pd, value);
         }
 
         public IMacroConfig CreateConfig(IEngineEnvironmentSettings environmentSettings, IMacroConfig rawConfig)
